@@ -1,0 +1,3049 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Sustainable Home | Limited Space Agriculture</title>
+  <meta name="description"
+    content="A school project on smart sustainable agriculture with live sensors, alerts, and timer controls." />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --green-900: #064e3b;
+      --green-800: #065f46;
+      --green-700: #047857;
+      --green-600: #059669;
+      --green-500: #10b981;
+      --green-400: #34d399;
+      --green-300: #6ee7b7;
+      --green-200: #a7f3d0;
+      --green-100: #d1fae5;
+      --green-50: #ecfdf5;
+      --red-500: #ef4444;
+      --red-100: #fee2e2;
+      --red-700: #b91c1c;
+      --amber-500: #f59e0b;
+      --amber-100: #fef3c7;
+      --amber-700: #b45309;
+      --blue-500: #3b82f6;
+      --blue-100: #dbeafe;
+      --blue-700: #1d4ed8;
+      --white: #ffffff;
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-600: #4b5563;
+      --gray-700: #374151;
+      --gray-800: #1f2937;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+      --shadow-md: 0 4px 16px rgba(5, 150, 105, 0.12);
+      --shadow-lg: 0 10px 40px rgba(5, 150, 105, 0.18);
+      --shadow-xl: 0 20px 60px rgba(5, 150, 105, 0.22);
+      --radius-sm: 8px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --radius-xl: 32px;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--white);
+      color: var(--gray-800);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--green-50);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--green-500);
+      border-radius: 3px;
+    }
+
+    /* ====== NAV ====== */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.93);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(16, 185, 129, 0.15);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 68px;
+      box-shadow: 0 2px 20px rgba(5, 150, 105, 0.08);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--green-700);
+      text-decoration: none;
+    }
+
+    .nav-logo-icon {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, var(--green-500), var(--green-700));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.6rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--gray-600);
+      font-weight: 500;
+      font-size: 0.88rem;
+      transition: color 0.2s;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -3px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--green-500);
+      transform: scaleX(0);
+      transition: transform 0.25s;
+      border-radius: 1px;
+    }
+
+    .nav-links a:hover {
+      color: var(--green-600);
+    }
+
+    .nav-links a:hover::after {
+      transform: scaleX(1);
+    }
+
+    /* Alert Bell */
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .bell-btn {
+      position: relative;
+      background: var(--green-50);
+      border: 1px solid var(--green-200);
+      border-radius: 50%;
+      width: 42px;
+      height: 42px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .bell-btn:hover {
+      background: var(--green-100);
+      transform: scale(1.08);
+    }
+
+    .bell-badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      background: var(--red-500);
+      color: #fff;
+      font-size: 0.65rem;
+      font-weight: 700;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #fff;
+      animation: badgePop 0.3s ease;
+    }
+
+    @keyframes badgePop {
+      from {
+        transform: scale(0);
+      }
+
+      to {
+        transform: scale(1);
+      }
+    }
+
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .nav-hamburger span {
+      width: 24px;
+      height: 2px;
+      background: var(--green-700);
+      border-radius: 2px;
+    }
+
+    /* ====== ALERT DRAWER ====== */
+    .alert-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 380px;
+      max-width: 100vw;
+      background: var(--white);
+      z-index: 3000;
+      box-shadow: -8px 0 40px rgba(0, 0, 0, 0.18);
+      transform: translateX(100%);
+      transition: transform 0.35s cubic-bezier(.4, 0, .2, 1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .alert-drawer.open {
+      transform: translateX(0);
+    }
+
+    .drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.35);
+      z-index: 2999;
+      display: none;
+      backdrop-filter: blur(3px);
+    }
+
+    .drawer-backdrop.open {
+      display: block;
+    }
+
+    .drawer-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--gray-100);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(135deg, var(--green-700), var(--green-900));
+      color: white;
+    }
+
+    .drawer-title {
+      font-weight: 700;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .drawer-close {
+      background: rgba(255, 255, 255, 0.15);
+      border: none;
+      color: white;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.2s;
+    }
+
+    .drawer-close:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .drawer-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    .drawer-tab {
+      flex: 1;
+      padding: 0.8rem;
+      text-align: center;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--gray-600);
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .drawer-tab.active {
+      color: var(--green-600);
+      border-bottom-color: var(--green-500);
+    }
+
+    .drawer-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    .alert-item {
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+      border-left: 4px solid;
+      display: flex;
+      gap: 0.8rem;
+      align-items: flex-start;
+      animation: slideInRight 0.3s ease;
+    }
+
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .alert-item.danger {
+      background: var(--red-100);
+      border-color: var(--red-500);
+    }
+
+    .alert-item.warning {
+      background: var(--amber-100);
+      border-color: var(--amber-500);
+    }
+
+    .alert-item.info {
+      background: var(--blue-100);
+      border-color: var(--blue-500);
+    }
+
+    .alert-item.success {
+      background: var(--green-100);
+      border-color: var(--green-500);
+    }
+
+    .alert-icon {
+      font-size: 1.3rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .alert-text {
+      flex: 1;
+    }
+
+    .alert-title {
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--gray-800);
+    }
+
+    .alert-msg {
+      font-size: 0.78rem;
+      color: var(--gray-600);
+      margin-top: 2px;
+    }
+
+    .alert-time {
+      font-size: 0.7rem;
+      color: var(--gray-600);
+      margin-top: 4px;
+    }
+
+    .alert-dismiss {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 0.9rem;
+      color: var(--gray-600);
+      padding: 2px 6px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    .alert-dismiss:hover {
+      background: rgba(0, 0, 0, 0.08);
+    }
+
+    .drawer-clear {
+      padding: 1rem;
+      border-top: 1px solid var(--gray-100);
+    }
+
+    .btn-clear {
+      width: 100%;
+      padding: 0.7rem;
+      background: var(--red-100);
+      color: var(--red-700);
+      border: 1px solid #fca5a5;
+      border-radius: var(--radius-sm);
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-clear:hover {
+      background: var(--red-500);
+      color: white;
+    }
+
+    .no-alerts {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--gray-600);
+    }
+
+    .no-alerts-icon {
+      font-size: 3rem;
+      display: block;
+      margin-bottom: 0.8rem;
+    }
+
+    /* ====== TOAST NOTIFICATION ====== */
+    .toast-container {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      pointer-events: none;
+    }
+
+    .toast {
+      background: var(--white);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.2rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+      border-left: 4px solid;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.8rem;
+      min-width: 280px;
+      max-width: 360px;
+      animation: toastIn 0.35s cubic-bezier(.4, 0, .2, 1) forwards;
+      pointer-events: all;
+    }
+
+    .toast.out {
+      animation: toastOut 0.3s ease forwards;
+    }
+
+    @keyframes toastIn {
+      from {
+        opacity: 0;
+        transform: translateX(60px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes toastOut {
+      from {
+        opacity: 1;
+        transform: translateX(0);
+      }
+
+      to {
+        opacity: 0;
+        transform: translateX(60px);
+      }
+    }
+
+    .toast.danger {
+      border-color: var(--red-500);
+    }
+
+    .toast.warning {
+      border-color: var(--amber-500);
+    }
+
+    .toast.info {
+      border-color: var(--blue-500);
+    }
+
+    .toast.success {
+      border-color: var(--green-500);
+    }
+
+    .toast-icon {
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+
+    .toast-body {
+      flex: 1;
+    }
+
+    .toast-title {
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+
+    .toast-msg {
+      font-size: 0.78rem;
+      color: var(--gray-600);
+      margin-top: 2px;
+    }
+
+    .toast-close {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--gray-600);
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    /* ====== HERO ====== */
+    #home {
+      min-height: 100vh;
+      background: linear-gradient(135deg, var(--green-900) 0%, var(--green-700) 50%, var(--green-500) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      padding: 100px 2rem 60px;
+    }
+
+    .hero-bg-circles {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .hero-bg-circles span {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.04);
+      animation: floatCircle 8s ease-in-out infinite;
+    }
+
+    .hero-bg-circles span:nth-child(1) {
+      width: 400px;
+      height: 400px;
+      top: -100px;
+      right: -100px;
+    }
+
+    .hero-bg-circles span:nth-child(2) {
+      width: 250px;
+      height: 250px;
+      bottom: -60px;
+      left: -60px;
+      animation-delay: 2s;
+    }
+
+    .hero-bg-circles span:nth-child(3) {
+      width: 180px;
+      height: 180px;
+      top: 40%;
+      left: 10%;
+      animation-delay: 4s;
+    }
+
+    @keyframes floatCircle {
+
+      0%,
+      100% {
+        transform: translateY(0) scale(1);
+      }
+
+      50% {
+        transform: translateY(-25px) scale(1.05);
+      }
+    }
+
+    .hero-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      max-width: 1200px;
+      width: 100%;
+      align-items: center;
+    }
+
+    .hero-text {
+      animation: fadeInLeft 0.9s ease both;
+    }
+
+    @keyframes fadeInLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-40px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-size: 0.8rem;
+      color: var(--green-200);
+      font-weight: 500;
+      margin-bottom: 1.5rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .hero-title {
+      font-size: clamp(2.2rem, 5vw, 3.6rem);
+      font-weight: 800;
+      color: var(--white);
+      line-height: 1.15;
+      margin-bottom: 1.2rem;
+    }
+
+    .hero-title span {
+      background: linear-gradient(90deg, var(--green-300), var(--green-200));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-tagline {
+      font-size: 1.05rem;
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 2.5rem;
+      max-width: 440px;
+    }
+
+    .hero-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--white);
+      color: var(--green-700);
+      padding: 14px 32px;
+      border-radius: 100px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-decoration: none;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s;
+    }
+
+    .hero-btn:hover {
+      background: var(--green-100);
+      transform: translateY(-3px);
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    .hero-illustration {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      animation: fadeInRight 0.9s ease 0.2s both;
+    }
+
+    @keyframes fadeInRight {
+      from {
+        opacity: 0;
+        transform: translateX(40px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .house-svg-wrap {
+      position: relative;
+      width: 100%;
+      max-width: 480px;
+    }
+
+    .house-svg-wrap svg {
+      width: 100%;
+      height: auto;
+      filter: drop-shadow(0 20px 60px rgba(0, 0, 0, 0.35));
+    }
+
+    .float-badge {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 12px;
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--green-700);
+      box-shadow: var(--shadow-md);
+      animation: floatBadge 4s ease-in-out infinite;
+      white-space: nowrap;
+    }
+
+    @keyframes floatBadge {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-8px);
+      }
+    }
+
+    /* ====== SECTIONS ====== */
+    section {
+      padding: 90px 2rem;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 3.5rem;
+    }
+
+    .section-tag {
+      display: inline-block;
+      background: var(--green-100);
+      color: var(--green-700);
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      border-radius: 100px;
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+      font-weight: 800;
+      color: var(--gray-800);
+      margin-bottom: 1rem;
+    }
+
+    .section-title span {
+      color: var(--green-600);
+    }
+
+    .section-subtitle {
+      font-size: 1rem;
+      color: var(--gray-600);
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* ====== DASHBOARD ====== */
+    #dashboard {
+      background: var(--gray-50);
+    }
+
+    .dash-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .dash-card {
+      background: var(--white);
+      border-radius: var(--radius-md);
+      padding: 1.8rem 1.5rem;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--gray-100);
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .dash-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--green-500), var(--green-300));
+    }
+
+    .dash-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--green-200);
+    }
+
+    .dash-icon {
+      font-size: 2.2rem;
+      margin-bottom: 0.8rem;
+      display: block;
+    }
+
+    .dash-label {
+      font-size: 0.82rem;
+      color: var(--gray-600);
+      font-weight: 500;
+      margin-bottom: 0.3rem;
+    }
+
+    .dash-status {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--green-600);
+    }
+
+    .dash-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--green-100);
+      color: var(--green-700);
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 100px;
+      margin-top: 0.5rem;
+    }
+
+    .pulse-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--green-500);
+      border-radius: 50%;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 0.4;
+        transform: scale(0.7);
+      }
+    }
+
+    /* ====== SENSOR DATA SECTION ====== */
+    #sensors {
+      background: var(--white);
+    }
+
+    .sensors-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .sensor-card {
+      background: var(--white);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--gray-100);
+      box-shadow: var(--shadow-sm);
+      padding: 1.5rem;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sensor-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--green-200);
+    }
+
+    .sensor-card.alert-warning {
+      border-color: var(--amber-500);
+      background: linear-gradient(135deg, var(--amber-100), var(--white));
+    }
+
+    .sensor-card.alert-danger {
+      border-color: var(--red-500);
+      background: linear-gradient(135deg, var(--red-100), var(--white));
+    }
+
+    .sensor-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+    }
+
+    .sensor-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--gray-600);
+    }
+
+    .sensor-status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--green-500);
+      flex-shrink: 0;
+      margin-top: 3px;
+    }
+
+    .sensor-status-dot.warn {
+      background: var(--amber-500);
+      animation: pulse 1s infinite;
+    }
+
+    .sensor-status-dot.danger {
+      background: var(--red-500);
+      animation: pulse 0.6s infinite;
+    }
+
+    .sensor-value {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--gray-800);
+      line-height: 1;
+    }
+
+    .sensor-unit {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--gray-600);
+    }
+
+    .sensor-label {
+      font-size: 0.78rem;
+      color: var(--gray-600);
+      margin-top: 0.3rem;
+    }
+
+    .sensor-bar-wrap {
+      margin-top: 1rem;
+    }
+
+    .sensor-bar-track {
+      height: 6px;
+      background: var(--gray-100);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .sensor-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 1s ease, background 0.5s ease;
+    }
+
+    .sensor-bar-fill.ok {
+      background: linear-gradient(90deg, var(--green-400), var(--green-600));
+    }
+
+    .sensor-bar-fill.warn {
+      background: linear-gradient(90deg, var(--amber-500), #f97316);
+    }
+
+    .sensor-bar-fill.danger {
+      background: linear-gradient(90deg, var(--red-500), #dc2626);
+    }
+
+    .sensor-range {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.68rem;
+      color: var(--gray-600);
+      margin-top: 4px;
+    }
+
+    .sensor-sparkline {
+      margin-top: 0.8rem;
+    }
+
+    .sparkline-bars {
+      display: flex;
+      gap: 2px;
+      height: 28px;
+      align-items: flex-end;
+    }
+
+    .sparkline-bar {
+      flex: 1;
+      border-radius: 2px 2px 0 0;
+      background: var(--green-300);
+      transition: height 0.8s ease, background 0.5s ease;
+      min-height: 4px;
+    }
+
+    .sparkline-bar.warn {
+      background: var(--amber-400);
+    }
+
+    .sparkline-bar.danger {
+      background: var(--red-400);
+    }
+
+    .sensor-alert-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 0.6rem;
+      padding: 3px 10px;
+      border-radius: 100px;
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+
+    .sensor-alert-badge.ok {
+      background: var(--green-100);
+      color: var(--green-700);
+    }
+
+    .sensor-alert-badge.warn {
+      background: var(--amber-100);
+      color: var(--amber-700);
+    }
+
+    .sensor-alert-badge.danger {
+      background: var(--red-100);
+      color: var(--red-700);
+    }
+
+    /* ====== FEATURES ====== */
+    #features {
+      background: var(--gray-50);
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.8rem;
+    }
+
+    .feature-card {
+      background: var(--white);
+      border: 1px solid var(--gray-100);
+      border-radius: var(--radius-lg);
+      padding: 2.2rem;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.35s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--green-50) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.35s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-xl);
+      border-color: var(--green-300);
+    }
+
+    .feature-card:hover::after {
+      opacity: 1;
+    }
+
+    .feature-icon-wrap {
+      width: 64px;
+      height: 64px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, var(--green-100), var(--green-200));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      margin-bottom: 1.4rem;
+      transition: transform 0.3s;
+      position: relative;
+      z-index: 1;
+    }
+
+    .feature-card:hover .feature-icon-wrap {
+      transform: scale(1.12) rotate(-3deg);
+    }
+
+    .feature-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--gray-800);
+      margin-bottom: 0.7rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .feature-desc {
+      font-size: 0.9rem;
+      color: var(--gray-600);
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .btn-view {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      border: 2px solid var(--green-500);
+      color: var(--green-600);
+      padding: 9px 22px;
+      border-radius: 100px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+      transition: all 0.3s;
+      position: relative;
+      z-index: 1;
+    }
+
+    .btn-view:hover {
+      background: var(--green-500);
+      color: var(--white);
+    }
+
+    /* ====== SMART CONTROLS ====== */
+    #controls {
+      background: linear-gradient(135deg, var(--green-900), var(--green-700));
+    }
+
+    #controls .section-title {
+      color: var(--white);
+    }
+
+    #controls .section-subtitle {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    #controls .section-tag {
+      background: rgba(255, 255, 255, 0.15);
+      color: var(--green-200);
+    }
+
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .control-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: var(--radius-md);
+      padding: 1.6rem;
+      transition: all 0.3s;
+    }
+
+    .control-card:hover {
+      background: rgba(255, 255, 255, 0.16);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    .control-top {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .control-icon {
+      font-size: 2rem;
+      flex-shrink: 0;
+    }
+
+    .control-info {
+      flex: 1;
+    }
+
+    .control-name {
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--white);
+      margin-bottom: 0.2rem;
+    }
+
+    .control-state {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--green-300);
+      transition: color 0.3s;
+    }
+
+    .control-state.off {
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .toggle {
+      position: relative;
+      width: 52px;
+      height: 28px;
+      flex-shrink: 0;
+    }
+
+    .toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-track {
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 14px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .toggle-track::before {
+      content: '';
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      left: 3px;
+      top: 3px;
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 50%;
+      transition: transform 0.3s, background 0.3s;
+    }
+
+    .toggle input:checked+.toggle-track {
+      background: var(--green-400);
+    }
+
+    .toggle input:checked+.toggle-track::before {
+      transform: translateX(24px);
+      background: var(--white);
+    }
+
+    /* Timer Controls */
+    .control-timer {
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      padding-top: 1rem;
+      margin-top: 0.2rem;
+    }
+
+    .timer-label {
+      font-size: 0.72rem;
+      color: rgba(255, 255, 255, 0.55);
+      font-weight: 500;
+      margin-bottom: 0.55rem;
+      letter-spacing: 0.03em;
+    }
+
+    .timer-row {
+      display: flex;
+      gap: 0.4rem;
+      align-items: center;
+      flex-wrap: nowrap;
+    }
+
+    .timer-input {
+      width: 52px;
+      min-width: 0;
+      flex-shrink: 1;
+      padding: 7px 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: var(--radius-sm);
+      color: white;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.82rem;
+      outline: none;
+      transition: border 0.2s;
+      text-align: center;
+    }
+
+    .timer-input::placeholder {
+      color: rgba(255, 255, 255, 0.35);
+      font-size: 0.75rem;
+    }
+
+    .timer-input:focus {
+      border-color: var(--green-400);
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .timer-unit {
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.55);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .btn-timer {
+      flex-shrink: 0;
+      padding: 7px 13px;
+      background: var(--green-400);
+      color: var(--green-900);
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      font-size: 0.76rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+      max-width: 90px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .btn-timer:hover {
+      background: var(--green-300);
+    }
+
+    .btn-timer:disabled {
+      opacity: 0.8;
+      cursor: default;
+    }
+
+    .btn-timer.cancel {
+      padding: 5px 10px;
+      background: rgba(239, 68, 68, 0.25);
+      color: #fca5a5;
+      font-size: 0.7rem;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-timer.cancel:hover {
+      background: rgba(239, 68, 68, 0.45);
+    }
+
+    .timer-countdown {
+      margin-top: 0.7rem;
+      background: rgba(52, 211, 153, 0.12);
+      border: 1px solid rgba(52, 211, 153, 0.2);
+      border-radius: var(--radius-sm);
+      padding: 8px 10px;
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .timer-countdown.running {
+      display: flex;
+    }
+
+    .timer-cd-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .timer-cd-time {
+      font-size: 0.85rem;
+      color: var(--green-300);
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.04em;
+    }
+
+    .timer-progress {
+      width: 100%;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .timer-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--green-400), var(--green-300));
+      border-radius: 3px;
+      transition: width 1s linear;
+    }
+
+    /* ====== BENEFITS ====== */
+    #benefits {
+      background: var(--gray-50);
+    }
+
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .benefit-card {
+      background: var(--white);
+      border-radius: var(--radius-md);
+      padding: 2rem 1.5rem;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--gray-100);
+      transition: all 0.3s;
+    }
+
+    .benefit-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--green-200);
+      background: linear-gradient(135deg, var(--white), var(--green-50));
+    }
+
+    .benefit-icon {
+      width: 70px;
+      height: 70px;
+      background: linear-gradient(135deg, var(--green-500), var(--green-700));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      margin: 0 auto 1.2rem;
+      box-shadow: 0 8px 25px rgba(16, 185, 129, 0.35);
+      transition: transform 0.3s;
+    }
+
+    .benefit-card:hover .benefit-icon {
+      transform: scale(1.12) rotate(5deg);
+    }
+
+    .benefit-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--gray-800);
+    }
+
+    /* ====== ABOUT ====== */
+    #about {
+      background: var(--white);
+    }
+
+    .about-inner {
+      max-width: 840px;
+      margin: 0 auto;
+      background: linear-gradient(135deg, var(--green-50), var(--white));
+      border: 1px solid var(--green-200);
+      border-radius: var(--radius-xl);
+      padding: 3.5rem;
+      text-align: center;
+      box-shadow: var(--shadow-md);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .about-inner::before {
+      content: '';
+      position: absolute;
+      top: -20px;
+      right: -20px;
+      width: 160px;
+      height: 160px;
+      background: radial-gradient(circle, var(--green-200) 0%, transparent 70%);
+      opacity: 0.4;
+    }
+
+    .about-inner p {
+      font-size: 1.05rem;
+      color: var(--gray-600);
+      line-height: 1.9;
+      position: relative;
+      z-index: 1;
+    }
+
+    .about-stats {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      margin-top: 2.5rem;
+      flex-wrap: wrap;
+    }
+
+    .about-stat-num {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--green-600);
+      display: block;
+    }
+
+    .about-stat-label {
+      font-size: 0.82rem;
+      color: var(--gray-600);
+      font-weight: 500;
+    }
+
+    /* ====== MODAL ====== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(6, 78, 59, 0.55);
+      backdrop-filter: blur(8px);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    .modal {
+      background: var(--white);
+      border-radius: var(--radius-xl);
+      padding: 2.5rem;
+      max-width: 540px;
+      width: 100%;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.25);
+      position: relative;
+      animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1.2rem;
+      right: 1.2rem;
+      width: 32px;
+      height: 32px;
+      background: var(--gray-100);
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      transition: background 0.2s;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .modal-close:hover {
+      background: var(--green-100);
+    }
+
+    .modal-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .modal-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--gray-800);
+      margin-bottom: 0.8rem;
+    }
+
+    .modal-desc {
+      font-size: 0.95rem;
+      color: var(--gray-600);
+      line-height: 1.8;
+    }
+
+    .modal-facts {
+      margin-top: 1.4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .modal-fact {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.88rem;
+      color: var(--gray-700);
+    }
+
+    .modal-fact::before {
+      content: '✅';
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* ====== FOOTER ====== */
+    footer {
+      background: var(--green-900);
+      color: rgba(255, 255, 255, 0.8);
+      padding: 3.5rem 2rem 2rem;
+    }
+
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .footer-top {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 3rem;
+      margin-bottom: 2.5rem;
+      padding-bottom: 2.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .footer-brand-name {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .footer-brand-name .logo-icon {
+      width: 34px;
+      height: 34px;
+      background: linear-gradient(135deg, var(--green-500), var(--green-400));
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+
+    .footer-desc {
+      font-size: 0.88rem;
+      line-height: 1.8;
+    }
+
+    .footer-col-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--white);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 1rem;
+    }
+
+    .footer-col ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .footer-col ul li {
+      font-size: 0.88rem;
+      color: rgba(255, 255, 255, 0.65);
+    }
+
+    .footer-col ul li span {
+      color: var(--green-300);
+      font-weight: 600;
+    }
+
+    .footer-bottom {
+      text-align: center;
+      font-size: 0.82rem;
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .footer-bottom strong {
+      color: var(--green-400);
+    }
+
+    /* ====== SCROLL REVEAL ====== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ====== RESPONSIVE ====== */
+    @media (max-width: 900px) {
+      .hero-content {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 2.5rem;
+      }
+
+      .hero-tagline {
+        margin: 0 auto 2.5rem;
+      }
+
+      .hero-illustration {
+        order: -1;
+      }
+
+      .house-svg-wrap {
+        max-width: 340px;
+      }
+
+      .float-badge {
+        display: none;
+      }
+
+      .footer-top {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+    }
+
+    @media (max-width: 640px) {
+      nav {
+        padding: 0 1rem;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 68px;
+        left: 0;
+        right: 0;
+        background: var(--white);
+        padding: 1.5rem 2rem;
+        border-bottom: 1px solid var(--gray-100);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        gap: 1rem;
+      }
+
+      .nav-hamburger {
+        display: flex;
+      }
+
+      section {
+        padding: 60px 1rem;
+      }
+
+      .about-inner {
+        padding: 2rem 1.5rem;
+      }
+
+      .about-stats {
+        gap: 1.5rem;
+      }
+
+      .features-grid,
+      .sensors-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .alert-drawer {
+        width: 100vw;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ====== TOAST CONTAINER ====== -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- ====== ALERT DRAWER BACKDROP ====== -->
+  <div class="drawer-backdrop" id="drawerBackdrop" onclick="closeDrawer()"></div>
+
+  <!-- ====== ALERT DRAWER ====== -->
+  <div class="alert-drawer" id="alertDrawer">
+    <div class="drawer-header">
+      <div class="drawer-title">🔔 Alerts & Notifications</div>
+      <button class="drawer-close" onclick="closeDrawer()">✕</button>
+    </div>
+    <div class="drawer-tabs">
+      <div class="drawer-tab active" onclick="filterAlerts('all', this)" id="tab-all">All</div>
+      <div class="drawer-tab" onclick="filterAlerts('danger', this)" id="tab-danger"> Critical</div>
+      <div class="drawer-tab" onclick="filterAlerts('warning', this)" id="tab-warning">Warnings</div>
+      <div class="drawer-tab" onclick="filterAlerts('info', this)" id="tab-info">Info</div>
+    </div>
+    <div class="drawer-body" id="alertList">
+      <div class="no-alerts" id="noAlerts">
+        <span class="no-alerts-icon">🎉</span>
+        All systems normal. No alerts!
+      </div>
+    </div>
+    <div class="drawer-clear">
+      <button class="btn-clear" onclick="clearAllAlerts()">🗑 Clear All Alerts</button>
+    </div>
+  </div>
+
+  <!-- ====== NAV ====== -->
+  <nav id="navbar">
+    <a href="#home" class="nav-logo">
+      <div class="nav-logo-icon">🌿</div>
+      ECO NEST
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#dashboard">Dashboard</a></li>
+      <li><a href="#sensors">Sensors</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#controls">Controls</a></li>
+      <li><a href="#benefits">Benefits</a></li>
+      <li><a href="#about">About</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="bell-btn" onclick="openDrawer()" id="bellBtn" aria-label="Open alerts">
+        🔔
+        <span class="bell-badge" id="bellBadge" style="display:none">0</span>
+      </button>
+      <div class="nav-hamburger" id="hamburger" onclick="toggleNav()">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ====== HERO ====== -->
+  <section id="home">
+    <div class="hero-bg-circles"><span></span><span></span><span></span></div>
+    <div class="hero-content">
+      <div class="hero-text">
+        <div class="hero-badge">🌿 Smart Home for Sustainable Living</div>
+        <h1 class="hero-title">ECO<br /><span>NEST</span></h1>
+        <p class="hero-tagline">A Smart Home for Sustainable Living.</p>
+        <a href="#dashboard" class="hero-btn" id="explore-btn">
+          Explore Project
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12" />
+            <polyline points="12 5 19 12 12 19" />
+          </svg>
+        </a>
+      </div>
+      <div class="hero-illustration">
+        <div class="house-svg-wrap">
+          <svg viewBox="0 0 480 440" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="roofGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#065f46" />
+                <stop offset="100%" stop-color="#047857" />
+              </linearGradient>
+              <linearGradient id="wallGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#d1fae5" />
+                <stop offset="100%" stop-color="#a7f3d0" />
+              </linearGradient>
+              <linearGradient id="solarGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#fbbf24" />
+                <stop offset="100%" stop-color="#f59e0b" />
+              </linearGradient>
+            </defs>
+            <ellipse cx="240" cy="430" rx="220" ry="18" fill="rgba(16,185,129,0.18)" />
+            <rect x="40" y="415" width="400" height="15" rx="8" fill="#6ee7b7" opacity="0.4" />
+            <rect x="80" y="220" width="320" height="200" rx="12" fill="url(#wallGrad)" stroke="#6ee7b7"
+              stroke-width="2" />
+            <rect x="195" y="310" width="50" height="110" rx="8" fill="url(#roofGrad)" />
+            <circle cx="238" cy="365" r="4" fill="#fbbf24" />
+            <rect x="100" y="255" width="60" height="55" rx="8" fill="rgba(103,232,249,0.6)" stroke="#6ee7b7"
+              stroke-width="1.5" />
+            <line x1="130" y1="255" x2="130" y2="310" stroke="#6ee7b7" stroke-width="1" />
+            <line x1="100" y1="282" x2="160" y2="282" stroke="#6ee7b7" stroke-width="1" />
+            <rect x="320" y="255" width="60" height="55" rx="8" fill="rgba(103,232,249,0.6)" stroke="#6ee7b7"
+              stroke-width="1.5" />
+            <line x1="350" y1="255" x2="350" y2="310" stroke="#6ee7b7" stroke-width="1" />
+            <line x1="320" y1="282" x2="380" y2="282" stroke="#6ee7b7" stroke-width="1" />
+            <polygon points="55,228 240,80 425,228" fill="url(#roofGrad)" stroke="#047857" stroke-width="2" />
+            <g transform="rotate(-32, 240, 155)">
+              <rect x="148" y="140" width="32" height="22" rx="3" fill="url(#solarGrad)" stroke="#d97706"
+                stroke-width="1" />
+              <rect x="184" y="132" width="32" height="22" rx="3" fill="url(#solarGrad)" stroke="#d97706"
+                stroke-width="1" />
+              <rect x="220" y="124" width="32" height="22" rx="3" fill="url(#solarGrad)" stroke="#d97706"
+                stroke-width="1" />
+              <rect x="256" y="132" width="32" height="22" rx="3" fill="url(#solarGrad)" stroke="#d97706"
+                stroke-width="1" />
+              <line x1="164" y1="140" x2="164" y2="162" stroke="#b45309" stroke-width="0.8" />
+              <line x1="200" y1="132" x2="200" y2="154" stroke="#b45309" stroke-width="0.8" />
+              <line x1="236" y1="124" x2="236" y2="146" stroke="#b45309" stroke-width="0.8" />
+              <line x1="272" y1="132" x2="272" y2="154" stroke="#b45309" stroke-width="0.8" />
+              <line x1="148" y1="151" x2="180" y2="151" stroke="#b45309" stroke-width="0.8" />
+              <line x1="184" y1="143" x2="216" y2="143" stroke="#b45309" stroke-width="0.8" />
+              <line x1="220" y1="135" x2="252" y2="135" stroke="#b45309" stroke-width="0.8" />
+              <line x1="256" y1="143" x2="288" y2="143" stroke="#b45309" stroke-width="0.8" />
+            </g>
+            <circle cx="380" cy="70" r="28" fill="#fbbf24" opacity="0.9">
+              <animate attributeName="opacity" values="0.9;0.6;0.9" dur="2.5s" repeatCount="indefinite" />
+            </circle>
+            <circle cx="380" cy="70" r="40" fill="#fbbf24" opacity="0.2">
+              <animate attributeName="r" values="38;46;38" dur="2.5s" repeatCount="indefinite" />
+            </circle>
+            <text x="373" y="76" font-size="18" fill="white">☀</text>
+            <rect x="30" y="240" width="42" height="180" rx="8" fill="#065f46" opacity="0.9" />
+            <rect x="32" y="258" width="38" height="8" rx="3" fill="#047857" />
+            <rect x="32" y="290" width="38" height="8" rx="3" fill="#047857" />
+            <rect x="32" y="322" width="38" height="8" rx="3" fill="#047857" />
+            <rect x="32" y="354" width="38" height="8" rx="3" fill="#047857" />
+            <text x="35" y="258" font-size="11">🌱</text><text x="47" y="258" font-size="11">🌿</text>
+            <text x="35" y="290" font-size="11">🥬</text><text x="47" y="290" font-size="11">🌱</text>
+            <text x="35" y="322" font-size="11">🌿</text><text x="47" y="322" font-size="11">🥬</text>
+            <text x="35" y="354" font-size="11">🌱</text><text x="47" y="354" font-size="11">🌿</text>
+            <rect x="408" y="300" width="44" height="115" rx="8" fill="#1d4ed8" opacity="0.6" />
+            <rect x="410" y="315" width="40" height="12" rx="4" fill="#3b82f6" opacity="0.8" />
+            <rect x="410" y="340" width="40" height="12" rx="4" fill="#3b82f6" opacity="0.8" />
+            <rect x="410" y="365" width="40" height="12" rx="4" fill="#3b82f6" opacity="0.8" />
+            <line x1="430" y1="390" x2="430" y2="415" stroke="#60a5fa" stroke-width="2" stroke-dasharray="4 4"
+              opacity="0.8">
+              <animate attributeName="stroke-dashoffset" values="0;8" dur="0.8s" repeatCount="indefinite" />
+            </line>
+            <rect x="412" y="380" width="36" height="36" rx="6" fill="#1e40af" opacity="0.7" />
+            <text x="420" y="402" font-size="14">🪣</text>
+            <rect x="115" y="395" width="70" height="28" rx="6" fill="#92400e" opacity="0.7" />
+            <text x="118" y="412" font-size="12">🥕</text><text x="133" y="412" font-size="12">🥬</text><text x="148"
+              y="412" font-size="12">🌿</text><text x="163" y="412" font-size="12">🥦</text>
+            <rect x="295" y="388" width="42" height="38" rx="6" fill="#78350f" opacity="0.8" />
+            <ellipse cx="316" cy="388" rx="21" ry="5" fill="#92400e" />
+            <text x="301" y="412" font-size="18">♻️</text>
+            <g opacity="0.7">
+              <circle cx="98" cy="40" r="3" fill="#60a5fa">
+                <animate attributeName="cy" values="40;420" dur="2s" repeatCount="indefinite" begin="0s" />
+                <animate attributeName="opacity" values="0.8;0" dur="2s" repeatCount="indefinite" begin="0s" />
+              </circle>
+              <circle cx="115" cy="20" r="2.5" fill="#60a5fa">
+                <animate attributeName="cy" values="20;420" dur="2s" repeatCount="indefinite" begin="0.4s" />
+                <animate attributeName="opacity" values="0.8;0" dur="2s" repeatCount="indefinite" begin="0.4s" />
+              </circle>
+              <circle cx="130" cy="55" r="2" fill="#60a5fa">
+                <animate attributeName="cy" values="55;420" dur="2s" repeatCount="indefinite" begin="0.9s" />
+                <animate attributeName="opacity" values="0.8;0" dur="2s" repeatCount="indefinite" begin="0.9s" />
+              </circle>
+            </g>
+          </svg>
+          <div class="float-badge" style="top:8%;right:-2%;animation-delay:0s">☀️ Solar Active</div>
+          <div class="float-badge" style="bottom:28%;right:-6%;animation-delay:1.5s">💧 Hydroponics On</div>
+          <div class="float-badge" style="bottom:8%;left:2%;animation-delay:0.8s">🌿 Vertical Farm</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== DASHBOARD ====== -->
+  <section id="dashboard">
+    <div class="container">
+      <div class="section-header reveal">
+        <div class="section-tag">📊 Live Monitor</div>
+        <h2 class="section-title">System <span>Dashboard</span></h2>
+        <p class="section-subtitle">Real-time status of all sustainable systems in your smart home.</p>
+      </div>
+      <div class="dash-grid">
+        <div class="dash-card reveal"><span class="dash-icon">🌞</span>
+          <div class="dash-label">Solar System</div>
+          <div class="dash-status">Active</div>
+          <div class="dash-pill"><span class="pulse-dot"></span> Generating 2.4 kW</div>
+        </div>
+        <div class="dash-card reveal"><span class="dash-icon">💧</span>
+          <div class="dash-label">Hydroponics</div>
+          <div class="dash-status">Running</div>
+          <div class="dash-pill"><span class="pulse-dot"></span> EC: 2.1 mS/cm</div>
+        </div>
+        <div class="dash-card reveal"><span class="dash-icon">🌿</span>
+          <div class="dash-label">Vertical Farming</div>
+          <div class="dash-status">Healthy</div>
+          <div class="dash-pill"><span class="pulse-dot"></span> 12 Plants Growing</div>
+        </div>
+        <div class="dash-card reveal"><span class="dash-icon">🥕</span>
+          <div class="dash-label">Square Foot Garden</div>
+          <div class="dash-status">Growing</div>
+          <div class="dash-pill"><span class="pulse-dot"></span> 4 Crops Active</div>
+        </div>
+        <div class="dash-card reveal"><span class="dash-icon">🌧️</span>
+          <div class="dash-label">Rainwater Tank</div>
+          <div class="dash-status">75% Full</div>
+          <div class="dash-pill"><span class="pulse-dot"></span> 150L Stored</div>
+        </div>
+        <div class="dash-card reveal"><span class="dash-icon">♻️</span>
+          <div class="dash-label">Compost Bin</div>
+          <div class="dash-status">Active</div>
+          <div class="dash-pill"><span class="pulse-dot"></span> 2.3 kg Processing</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== SENSOR DATA ====== -->
+  <section id="sensors">
+    <div class="container">
+      <div class="section-header reveal">
+        <div class="section-tag">📡 IoT Sensors</div>
+        <h2 class="section-title">Live <span>Sensor Data</span></h2>
+        <p class="section-subtitle">Real-time readings from all sensors. Alerts trigger automatically when values go out
+          of safe range.</p>
+      </div>
+      <div class="sensors-grid" id="sensorsGrid">
+
+        <!-- Temperature -->
+        <div class="sensor-card reveal" id="sc-temp">
+          <div class="sensor-header">
+            <div>
+              <div class="sensor-name">🌡️ Temperature</div>
+              <div class="sensor-label">Grow Room</div>
+            </div>
+            <div class="sensor-status-dot" id="dot-temp"></div>
+          </div>
+          <div><span class="sensor-value" id="val-temp">24.5</span><span class="sensor-unit"> °C</span></div>
+          <div class="sensor-bar-wrap">
+            <div class="sensor-bar-track">
+              <div class="sensor-bar-fill ok" id="bar-temp" style="width:49%"></div>
+            </div>
+            <div class="sensor-range"><span>10°C</span><span>Safe: 18–30°C</span><span>40°C</span></div>
+          </div>
+          <div class="sensor-sparkline">
+            <div class="sparkline-bars" id="spark-temp"></div>
+          </div>
+          <div class="sensor-alert-badge ok" id="badge-temp">✅ Normal</div>
+        </div>
+
+        <!-- Humidity -->
+        <div class="sensor-card reveal" id="sc-hum">
+          <div class="sensor-header">
+            <div>
+              <div class="sensor-name">💦 Humidity</div>
+              <div class="sensor-label">Grow Room</div>
+            </div>
+            <div class="sensor-status-dot" id="dot-hum"></div>
+          </div>
+          <div><span class="sensor-value" id="val-hum">65</span><span class="sensor-unit"> %</span></div>
+          <div class="sensor-bar-wrap">
+            <div class="sensor-bar-track">
+              <div class="sensor-bar-fill ok" id="bar-hum" style="width:65%"></div>
+            </div>
+            <div class="sensor-range"><span>0%</span><span>Safe: 50–80%</span><span>100%</span></div>
+          </div>
+          <div class="sensor-sparkline">
+            <div class="sparkline-bars" id="spark-hum"></div>
+          </div>
+          <div class="sensor-alert-badge ok" id="badge-hum">✅ Normal</div>
+        </div>
+
+        <!-- Soil Moisture -->
+        <div class="sensor-card reveal" id="sc-soil">
+          <div class="sensor-header">
+            <div>
+              <div class="sensor-name">🌱 Soil Moisture</div>
+              <div class="sensor-label">Square Foot Garden</div>
+            </div>
+            <div class="sensor-status-dot" id="dot-soil"></div>
+          </div>
+          <div><span class="sensor-value" id="val-soil">42</span><span class="sensor-unit"> %</span></div>
+          <div class="sensor-bar-wrap">
+            <div class="sensor-bar-track">
+              <div class="sensor-bar-fill ok" id="bar-soil" style="width:42%"></div>
+            </div>
+            <div class="sensor-range"><span>0%</span><span>Safe: 30–70%</span><span>100%</span></div>
+          </div>
+          <div class="sensor-sparkline">
+            <div class="sparkline-bars" id="spark-soil"></div>
+          </div>
+          <div class="sensor-alert-badge ok" id="badge-soil">✅ Normal</div>
+        </div>
+
+        <!-- Water pH -->
+        <div class="sensor-card reveal" id="sc-ph">
+          <div class="sensor-header">
+            <div>
+              <div class="sensor-name">🧪 Water pH</div>
+              <div class="sensor-label">Hydroponic Tank</div>
+            </div>
+            <div class="sensor-status-dot" id="dot-ph"></div>
+          </div>
+          <div><span class="sensor-value" id="val-ph">6.2</span><span class="sensor-unit"> pH</span></div>
+          <div class="sensor-bar-wrap">
+            <div class="sensor-bar-track">
+              <div class="sensor-bar-fill ok" id="bar-ph" style="width:52%"></div>
+            </div>
+            <div class="sensor-range"><span>4.0</span><span>Safe: 5.5–7.0</span><span>8.0</span></div>
+          </div>
+          <div class="sensor-sparkline">
+            <div class="sparkline-bars" id="spark-ph"></div>
+          </div>
+          <div class="sensor-alert-badge ok" id="badge-ph">✅ Normal</div>
+        </div>
+
+        <!-- Water Level -->
+        <div class="sensor-card reveal" id="sc-water">
+          <div class="sensor-header">
+            <div>
+              <div class="sensor-name">🪣 Rainwater Tank</div>
+              <div class="sensor-label">Rooftop Collection</div>
+            </div>
+            <div class="sensor-status-dot" id="dot-water"></div>
+          </div>
+          <div><span class="sensor-value" id="val-water">75</span><span class="sensor-unit"> %</span></div>
+          <div class="sensor-bar-wrap">
+            <div class="sensor-bar-track">
+              <div class="sensor-bar-fill ok" id="bar-water" style="width:75%"></div>
+            </div>
+            <div class="sensor-range"><span>0%</span><span>Alert: &lt;20%</span><span>100%</span></div>
+          </div>
+          <div class="sensor-sparkline">
+            <div class="sparkline-bars" id="spark-water"></div>
+          </div>
+          <div class="sensor-alert-badge ok" id="badge-water">✅ Normal</div>
+        </div>
+
+        <!-- Light Intensity -->
+        <div class="sensor-card reveal" id="sc-light">
+          <div class="sensor-header">
+            <div>
+              <div class="sensor-name">☀️ Light Intensity</div>
+              <div class="sensor-label">Solar & Grow Lights</div>
+            </div>
+            <div class="sensor-status-dot" id="dot-light"></div>
+          </div>
+          <div><span class="sensor-value" id="val-light">820</span><span class="sensor-unit"> lux</span></div>
+          <div class="sensor-bar-wrap">
+            <div class="sensor-bar-track">
+              <div class="sensor-bar-fill ok" id="bar-light" style="width:82%"></div>
+            </div>
+            <div class="sensor-range"><span>0</span><span>Safe: 400–1000</span><span>1000</span></div>
+          </div>
+          <div class="sensor-sparkline">
+            <div class="sparkline-bars" id="spark-light"></div>
+          </div>
+          <div class="sensor-alert-badge ok" id="badge-light">✅ Normal</div>
+        </div>
+
+        <!-- EC (Nutrient) -->
+        <div class="sensor-card reveal" id="sc-ec">
+          <div class="sensor-header">
+            <div>
+              <div class="sensor-name">⚗️ Nutrient EC</div>
+              <div class="sensor-label">Hydroponic Solution</div>
+            </div>
+            <div class="sensor-status-dot" id="dot-ec"></div>
+          </div>
+          <div><span class="sensor-value" id="val-ec">2.1</span><span class="sensor-unit"> mS/cm</span></div>
+          <div class="sensor-bar-wrap">
+            <div class="sensor-bar-track">
+              <div class="sensor-bar-fill ok" id="bar-ec" style="width:52%"></div>
+            </div>
+            <div class="sensor-range"><span>0</span><span>Safe: 1.5–3.0</span><span>4.0</span></div>
+          </div>
+          <div class="sensor-sparkline">
+            <div class="sparkline-bars" id="spark-ec"></div>
+          </div>
+          <div class="sensor-alert-badge ok" id="badge-ec">✅ Normal</div>
+        </div>
+
+        <!-- Solar Power -->
+        <div class="sensor-card reveal" id="sc-solar">
+          <div class="sensor-header">
+            <div>
+              <div class="sensor-name">🔋 Solar Power</div>
+              <div class="sensor-label">Panel Output</div>
+            </div>
+            <div class="sensor-status-dot" id="dot-solar"></div>
+          </div>
+          <div><span class="sensor-value" id="val-solar">2.4</span><span class="sensor-unit"> kW</span></div>
+          <div class="sensor-bar-wrap">
+            <div class="sensor-bar-track">
+              <div class="sensor-bar-fill ok" id="bar-solar" style="width:80%"></div>
+            </div>
+            <div class="sensor-range"><span>0</span><span>Target: 1.5+ kW</span><span>3.0</span></div>
+          </div>
+          <div class="sensor-sparkline">
+            <div class="sparkline-bars" id="spark-solar"></div>
+          </div>
+          <div class="sensor-alert-badge ok" id="badge-solar">✅ Normal</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== FEATURES ====== -->
+  <section id="features">
+    <div class="container">
+      <div class="section-header reveal">
+        <div class="section-tag">🌱 Technology</div>
+        <h2 class="section-title">Our <span>Features</span></h2>
+        <p class="section-subtitle">Six integrated systems working together to create a self-sustaining home ecosystem.
+        </p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card reveal">
+          <div class="feature-icon-wrap">💧</div>
+          <h3 class="feature-title">Hydroponics</h3>
+          <p class="feature-desc">Plants are grown without soil using nutrient-rich water, allowing efficient food
+            production in small spaces.</p><button class="btn-view" onclick="openModal('hydro')">View Details <svg
+              width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6" />
+            </svg></button>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon-wrap">🌿</div>
+          <h3 class="feature-title">Vertical Farming</h3>
+          <p class="feature-desc">Crops are grown in vertical layers to maximize food production while occupying minimal
+            floor space.</p><button class="btn-view" onclick="openModal('vertical')">View Details <svg width="14"
+              height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6" />
+            </svg></button>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon-wrap">🥕</div>
+          <h3 class="feature-title">Square Foot Gardening</h3>
+          <p class="feature-desc">A compact gardening method that organizes crops into small square sections for
+            efficient space utilization.</p><button class="btn-view" onclick="openModal('sqft')">View Details <svg
+              width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6" />
+            </svg></button>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon-wrap">🌧️</div>
+          <h3 class="feature-title">Rainwater Harvesting</h3>
+          <p class="feature-desc">Rainwater collected from the terrace is stored and reused for irrigation, reducing
+            freshwater consumption.</p><button class="btn-view" onclick="openModal('rain')">View Details <svg width="14"
+              height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6" />
+            </svg></button>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon-wrap">♻️</div>
+          <h3 class="feature-title">Composting</h3>
+          <p class="feature-desc">Kitchen and garden waste are converted into organic compost, providing natural
+            fertilizer for plants.</p><button class="btn-view" onclick="openModal('compost')">View Details <svg
+              width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6" />
+            </svg></button>
+        </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon-wrap">🌞</div>
+          <h3 class="feature-title">Solar Energy</h3>
+          <p class="feature-desc">Solar panels generate clean electricity to power pumps, lights, and other smart
+            farming systems.</p><button class="btn-view" onclick="openModal('solar')">View Details <svg width="14"
+              height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6" />
+            </svg></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== SMART CONTROLS ====== -->
+  <section id="controls">
+    <div class="container">
+      <div class="section-header reveal">
+        <div class="section-tag">⚡ Automation</div>
+        <h2 class="section-title">Smart <span style="color:var(--green-300)">Controls</span></h2>
+        <p class="section-subtitle" style="color:rgba(255,255,255,0.65)">Toggle systems and set auto-off timers. Visual
+          simulation only.</p>
+      </div>
+      <div class="controls-grid">
+
+        <!-- Hydroponic Pump -->
+        <div class="control-card reveal">
+          <div class="control-top">
+            <div class="control-icon">💧</div>
+            <div class="control-info">
+              <div class="control-name">Hydroponic Pump</div>
+              <div class="control-state" id="state-pump">Status: ON</div>
+            </div>
+            <label class="toggle" aria-label="Toggle hydroponic pump">
+              <input type="checkbox" checked id="toggle-pump" onchange="updateState('pump', this.checked)" />
+              <span class="toggle-track"></span>
+            </label>
+          </div>
+          <div class="control-timer">
+            <div class="timer-label" id="timer-label-pump">⏱ Auto-off Timer</div>
+            <div class="timer-row">
+              <input type="number" class="timer-input" id="timer-input-pump-m" placeholder="mm" min="0" max="1440"
+                style="width:60px" />
+              <span class="timer-unit">m</span>
+              <input type="number" class="timer-input" id="timer-input-pump-s" placeholder="ss" min="0" max="59"
+                style="width:60px" />
+              <span class="timer-unit">s</span>
+              <button class="btn-timer" id="timer-btn-pump" onclick="setTimer('pump')">Set</button>
+            </div>
+            <div class="timer-countdown" id="timer-cd-pump">
+              <div class="timer-cd-top">
+                <span class="timer-cd-time" id="timer-text-pump">00:30:00</span>
+                <button class="btn-timer cancel" onclick="cancelTimer('pump')">&#10005; Cancel</button>
+              </div>
+              <div class="timer-progress">
+                <div class="timer-progress-fill" id="timer-pf-pump" style="width:100%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Irrigation -->
+        <div class="control-card reveal">
+          <div class="control-top">
+            <div class="control-icon">🚿</div>
+            <div class="control-info">
+              <div class="control-name">Irrigation System</div>
+              <div class="control-state" id="state-irrigation">Status: ON</div>
+            </div>
+            <label class="toggle" aria-label="Toggle irrigation">
+              <input type="checkbox" checked id="toggle-irrigation"
+                onchange="updateState('irrigation', this.checked)" />
+              <span class="toggle-track"></span>
+            </label>
+          </div>
+          <div class="control-timer">
+            <div class="timer-label" id="timer-label-irrigation">⏱ Auto-off Timer</div>
+            <div class="timer-row">
+              <input type="number" class="timer-input" id="timer-input-irrigation-m" placeholder="mm" min="0" max="1440"
+                style="width:60px" />
+              <span class="timer-unit">m</span>
+              <input type="number" class="timer-input" id="timer-input-irrigation-s" placeholder="ss" min="0" max="59"
+                style="width:60px" />
+              <span class="timer-unit">s</span>
+              <button class="btn-timer" id="timer-btn-irrigation" onclick="setTimer('irrigation')">Set</button>
+            </div>
+            <div class="timer-countdown" id="timer-cd-irrigation">
+              <div class="timer-cd-top">
+                <span class="timer-cd-time" id="timer-text-irrigation">00:15:00</span>
+                <button class="btn-timer cancel" onclick="cancelTimer('irrigation')">&#10005; Cancel</button>
+              </div>
+              <div class="timer-progress">
+                <div class="timer-progress-fill" id="timer-pf-irrigation" style="width:100%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Grow Lights -->
+        <div class="control-card reveal">
+          <div class="control-top">
+            <div class="control-icon">💡</div>
+            <div class="control-info">
+              <div class="control-name">Grow Lights</div>
+              <div class="control-state" id="state-lights">Status: ON</div>
+            </div>
+            <label class="toggle" aria-label="Toggle grow lights">
+              <input type="checkbox" checked id="toggle-lights" onchange="updateState('lights', this.checked)" />
+              <span class="toggle-track"></span>
+            </label>
+          </div>
+          <div class="control-timer">
+            <div class="timer-label" id="timer-label-lights">⏱ Auto-off Timer</div>
+            <div class="timer-row">
+              <input type="number" class="timer-input" id="timer-input-lights-m" placeholder="mm" min="0" max="1440"
+                style="width:60px" />
+              <span class="timer-unit">m</span>
+              <input type="number" class="timer-input" id="timer-input-lights-s" placeholder="ss" min="0" max="59"
+                style="width:60px" />
+              <span class="timer-unit">s</span>
+              <button class="btn-timer" id="timer-btn-lights" onclick="setTimer('lights')">Set</button>
+            </div>
+            <div class="timer-countdown" id="timer-cd-lights">
+              <div class="timer-cd-top">
+                <span class="timer-cd-time" id="timer-text-lights">01:00:00</span>
+                <button class="btn-timer cancel" onclick="cancelTimer('lights')">&#10005; Cancel</button>
+              </div>
+              <div class="timer-progress">
+                <div class="timer-progress-fill" id="timer-pf-lights" style="width:100%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Water Pump -->
+        <div class="control-card reveal">
+          <div class="control-top">
+            <div class="control-icon">⛽</div>
+            <div class="control-info">
+              <div class="control-name">Water Pump</div>
+              <div class="control-state off" id="state-water">Status: OFF</div>
+            </div>
+            <label class="toggle" aria-label="Toggle water pump">
+              <input type="checkbox" id="toggle-water" onchange="updateState('water', this.checked)" />
+              <span class="toggle-track"></span>
+            </label>
+          </div>
+          <div class="control-timer">
+            <div class="timer-label" id="timer-label-water">⏱ Auto-off Timer</div>
+            <div class="timer-row">
+              <input type="number" class="timer-input" id="timer-input-water-m" placeholder="mm" min="0" max="1440"
+                style="width:60px" />
+              <span class="timer-unit">m</span>
+              <input type="number" class="timer-input" id="timer-input-water-s" placeholder="ss" min="0" max="59"
+                style="width:60px" />
+              <span class="timer-unit">s</span>
+              <button class="btn-timer" id="timer-btn-water" onclick="setTimer('water')">Set</button>
+            </div>
+            <div class="timer-countdown" id="timer-cd-water">
+              <div class="timer-cd-top">
+                <span class="timer-cd-time" id="timer-text-water">00:10:00</span>
+                <button class="btn-timer cancel" onclick="cancelTimer('water')">&#10005; Cancel</button>
+              </div>
+              <div class="timer-progress">
+                <div class="timer-progress-fill" id="timer-pf-water" style="width:100%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== BENEFITS ====== -->
+  <section id="benefits">
+    <div class="container">
+      <div class="section-header reveal">
+        <div class="section-tag">✅ Why It Matters</div>
+        <h2 class="section-title">Key <span>Benefits</span></h2>
+        <p class="section-subtitle">Every system delivers measurable environmental and personal benefits.</p>
+      </div>
+      <div class="benefits-grid">
+        <div class="benefit-card reveal">
+          <div class="benefit-icon">💧</div>
+          <div class="benefit-title">Saves Water</div>
+        </div>
+        <div class="benefit-card reveal">
+          <div class="benefit-icon">⚡</div>
+          <div class="benefit-title">Saves Energy</div>
+        </div>
+        <div class="benefit-card reveal">
+          <div class="benefit-icon">📐</div>
+          <div class="benefit-title">Maximizes Limited Space</div>
+        </div>
+        <div class="benefit-card reveal">
+          <div class="benefit-icon">🥗</div>
+          <div class="benefit-title">Produces Fresh Organic Food</div>
+        </div>
+        <div class="benefit-card reveal">
+          <div class="benefit-icon">☀️</div>
+          <div class="benefit-title">Uses Renewable Energy</div>
+        </div>
+        <div class="benefit-card reveal">
+          <div class="benefit-icon">🌍</div>
+          <div class="benefit-title">Promotes Sustainable Living</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== ABOUT ====== -->
+  <section id="about">
+    <div class="container">
+      <div class="section-header reveal">
+        <div class="section-tag">ℹ️ About</div>
+        <h2 class="section-title">About The <span>Project</span></h2>
+      </div>
+      <div class="about-inner reveal">
+        <p>This project demonstrates how a modern home can practice sustainable agriculture in limited space using
+          <strong>hydroponics, vertical farming, square foot gardening, rainwater harvesting, composting, and solar
+            energy.</strong> A simple smart dashboard allows users to monitor and control these systems, promoting
+          efficient resource management and environmentally friendly living.
+        </p>
+        <div class="about-stats">
+          <div><span class="about-stat-num">6</span><span class="about-stat-label">Smart Systems</span></div>
+          <div><span class="about-stat-num">70%</span><span class="about-stat-label">Water Saved</span></div>
+          <div><span class="about-stat-num">100%</span><span class="about-stat-label">Organic Produce</span></div>
+          <div><span class="about-stat-num">0</span><span class="about-stat-label">Soil Needed</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== FOOTER ====== -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-top" style="grid-template-columns:1fr 1fr;">
+        <div>
+          <div class="footer-brand-name">
+            <div class="logo-icon">🌿</div> ECO NEST
+          </div>
+          <p class="footer-desc">A smart home platform for sustainable living — integrating hydroponics, vertical
+            farming, rainwater harvesting, composting, and solar energy into one intelligent ecosystem.</p>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Quick Links</div>
+          <ul>
+            <li><a href="#dashboard" style="color:rgba(255,255,255,0.65);text-decoration:none;">Dashboard</a></li>
+            <li><a href="#sensors" style="color:rgba(255,255,255,0.65);text-decoration:none;">Live Sensors</a></li>
+            <li><a href="#features" style="color:rgba(255,255,255,0.65);text-decoration:none;">Features</a></li>
+            <li><a href="#controls" style="color:rgba(255,255,255,0.65);text-decoration:none;">Smart Controls</a></li>
+            <li><a href="#about" style="color:rgba(255,255,255,0.65);text-decoration:none;">About</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">&copy; 2026 <strong>ECO NEST</strong> — Smart Home for Sustainable Living. Made with 💚
+        for a greener tomorrow.</div>
+    </div>
+  </footer>
+
+  <!-- ====== FEATURE MODAL ====== -->
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+    <div class="modal" id="modalBox">
+      <button class="modal-close" onclick="closeModalDirect()">&#10005;</button>
+      <div class="modal-icon" id="modal-icon"></div>
+      <h3 class="modal-title" id="modal-title"></h3>
+      <p class="modal-desc" id="modal-desc"></p>
+      <div class="modal-facts" id="modal-facts"></div>
+    </div>
+  </div>
+
+  <script>
+    // ============================================================
+    // ALERT SYSTEM
+    // ============================================================
+    var alerts = [];
+    var alertFilter = 'all';
+    var alertIdCounter = 0;
+
+    function addAlert(type, title, msg) {
+      var id = ++alertIdCounter;
+      var now = new Date();
+      var timeStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0') + ':' + now.getSeconds().toString().padStart(2, '0');
+      alerts.unshift({ id: id, type: type, title: title, msg: msg, time: timeStr });
+      renderAlerts();
+      updateBellBadge();
+      showToast(type, title, msg);
+    }
+
+    function dismissAlert(id) {
+      alerts = alerts.filter(function (a) { return a.id !== id; });
+      renderAlerts();
+      updateBellBadge();
+    }
+
+    function clearAllAlerts() {
+      alerts = [];
+      renderAlerts();
+      updateBellBadge();
+    }
+
+    function filterAlerts(f, tabEl) {
+      alertFilter = f;
+      document.querySelectorAll('.drawer-tab').forEach(function (t) { t.classList.remove('active'); });
+      if (tabEl) tabEl.classList.add('active');
+      renderAlerts();
+    }
+
+    function renderAlerts() {
+      var list = document.getElementById('alertList');
+      var noAlerts = document.getElementById('noAlerts');
+      var filtered = alertFilter === 'all' ? alerts : alerts.filter(function (a) { return a.type === alertFilter; });
+
+      if (filtered.length === 0) {
+        noAlerts.style.display = 'block';
+        // Remove all alert items but keep noAlerts div
+        var children = list.querySelectorAll('.alert-item');
+        children.forEach(function (c) { c.remove(); });
+        return;
+      }
+
+      noAlerts.style.display = 'none';
+      var icons = { danger: '🚨', warning: '⚠️', info: 'ℹ️', success: '✅' };
+      // Remove existing alert items and re-render
+      var existing = list.querySelectorAll('.alert-item');
+      existing.forEach(function (c) { c.remove(); });
+      var html = filtered.map(function (a) {
+        return '<div class="alert-item ' + a.type + '" id="alert-' + a.id + '">' +
+          '<span class="alert-icon">' + icons[a.type] + '</span>' +
+          '<div class="alert-text"><div class="alert-title">' + a.title + '</div>' +
+          '<div class="alert-msg">' + a.msg + '</div>' +
+          '<div class="alert-time">🕐 ' + a.time + '</div></div>' +
+          '<button class="alert-dismiss" onclick="dismissAlert(' + a.id + ')">✕</button>' +
+          '</div>';
+      }).join('');
+      list.insertAdjacentHTML('afterbegin', html);
+    }
+
+    function updateBellBadge() {
+      var badge = document.getElementById('bellBadge');
+      if (alerts.length === 0) {
+        badge.style.display = 'none';
+      } else {
+        badge.style.display = 'flex';
+        badge.textContent = alerts.length > 99 ? '99+' : alerts.length;
+      }
+    }
+
+    function openDrawer() {
+      document.getElementById('alertDrawer').classList.add('open');
+      document.getElementById('drawerBackdrop').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeDrawer() {
+      document.getElementById('alertDrawer').classList.remove('open');
+      document.getElementById('drawerBackdrop').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    // ============================================================
+    // TOAST NOTIFICATIONS
+    // ============================================================
+    function showToast(type, title, msg) {
+      var icons = { danger: '🚨', warning: '⚠️', info: 'ℹ️', success: '✅' };
+      var container = document.getElementById('toastContainer');
+      var toast = document.createElement('div');
+      toast.className = 'toast ' + type;
+      toast.innerHTML = '<span class="toast-icon">' + icons[type] + '</span><div class="toast-body"><div class="toast-title">' + title + '</div><div class="toast-msg">' + msg + '</div></div><button class="toast-close" onclick="this.parentElement.remove()">✕</button>';
+      container.appendChild(toast);
+      setTimeout(function () {
+        toast.classList.add('out');
+        setTimeout(function () { if (toast.parentElement) toast.remove(); }, 300);
+      }, 5000);
+    }
+
+    // ============================================================
+    // SENSOR SIMULATION
+    // ============================================================
+    var sensorState = {
+      temp: { val: 24.5, min: 18, max: 30, rangeMin: 10, rangeMax: 40, history: [], unit: '°C', label: 'Temperature', prevStatus: 'ok' },
+      hum: { val: 65, min: 50, max: 80, rangeMin: 0, rangeMax: 100, history: [], unit: '%', label: 'Humidity', prevStatus: 'ok' },
+      soil: { val: 42, min: 30, max: 70, rangeMin: 0, rangeMax: 100, history: [], unit: '%', label: 'Soil Moisture', prevStatus: 'ok' },
+      ph: { val: 6.2, min: 5.5, max: 7.0, rangeMin: 4.0, rangeMax: 8.0, history: [], unit: ' pH', label: 'Water pH', prevStatus: 'ok', decimals: 1 },
+      water: { val: 75, min: 20, max: 100, rangeMin: 0, rangeMax: 100, history: [], unit: '%', label: 'Rainwater Tank', prevStatus: 'ok', alertLow: true },
+      light: { val: 820, min: 400, max: 1000, rangeMin: 0, rangeMax: 1000, history: [], unit: ' lux', label: 'Light Intensity', prevStatus: 'ok' },
+      ec: { val: 2.1, min: 1.5, max: 3.0, rangeMin: 0, rangeMax: 4.0, history: [], unit: ' mS/cm', label: 'Nutrient EC', prevStatus: 'ok', decimals: 1 },
+      solar: { val: 2.4, min: 1.5, max: 3.0, rangeMin: 0, rangeMax: 3.0, history: [], unit: ' kW', label: 'Solar Power', prevStatus: 'ok', decimals: 1, alertLow: true }
+    };
+
+    // Init sparklines with some history
+    Object.keys(sensorState).forEach(function (k) {
+      var s = sensorState[k];
+      for (var i = 0; i < 12; i++) {
+        var jitter = (Math.random() - 0.5) * (s.rangeMax - s.rangeMin) * 0.1;
+        s.history.push(Math.max(s.rangeMin, Math.min(s.rangeMax, s.val + jitter)));
+      }
+    });
+
+    function getSensorStatus(key) {
+      var s = sensorState[key];
+      var v = s.val;
+      if (s.alertLow) {
+        // For water and solar, low is the main concern
+        var pct = (v - s.rangeMin) / (s.rangeMax - s.rangeMin);
+        if (v < s.min) return (pct < 0.1) ? 'danger' : 'warn';
+      } else {
+        if (v < s.min || v > s.max) {
+          var deviation = Math.max(Math.abs(v - s.min) / (s.max - s.min), Math.abs(v - s.max) / (s.max - s.min));
+          return deviation > 0.3 ? 'danger' : 'warn';
+        }
+      }
+      return 'ok';
+    }
+
+    function getBarPct(key) {
+      var s = sensorState[key];
+      return Math.round((s.val - s.rangeMin) / (s.rangeMax - s.rangeMin) * 100);
+    }
+
+    function formatVal(key) {
+      var s = sensorState[key];
+      if (s.decimals) return s.val.toFixed(s.decimals);
+      return Math.round(s.val).toString();
+    }
+
+    var alertedSensors = {};
+
+    function updateSensorUI(key) {
+      var s = sensorState[key];
+      var status = getSensorStatus(key);
+      var pct = getBarPct(key);
+
+      // Value
+      var valEl = document.getElementById('val-' + key);
+      if (valEl) valEl.textContent = formatVal(key);
+
+      // Bar
+      var barEl = document.getElementById('bar-' + key);
+      if (barEl) {
+        barEl.style.width = Math.max(2, Math.min(100, pct)) + '%';
+        barEl.className = 'sensor-bar-fill ' + status;
+      }
+
+      // Dot
+      var dotEl = document.getElementById('dot-' + key);
+      if (dotEl) {
+        dotEl.className = 'sensor-status-dot' + (status !== 'ok' ? ' ' + status : '');
+      }
+
+      // Badge
+      var badgeEl = document.getElementById('badge-' + key);
+      if (badgeEl) {
+        var msgs = { ok: '✅ Normal', warn: '⚠️ Warning', danger: '🚨 Critical' };
+        badgeEl.textContent = msgs[status];
+        badgeEl.className = 'sensor-alert-badge ' + status;
+      }
+
+      // Card border
+      var cardEl = document.getElementById('sc-' + key);
+      if (cardEl) {
+        cardEl.classList.remove('alert-warning', 'alert-danger');
+        if (status === 'warn') cardEl.classList.add('alert-warning');
+        if (status === 'danger') cardEl.classList.add('alert-danger');
+      }
+
+      // Sparkline
+      s.history.push(s.val);
+      if (s.history.length > 12) s.history.shift();
+      var sparkEl = document.getElementById('spark-' + key);
+      if (sparkEl) {
+        var min = Math.min.apply(null, s.history);
+        var max = Math.max.apply(null, s.history);
+        var range = max - min || 1;
+        sparkEl.innerHTML = s.history.map(function (v) {
+          var h = Math.max(10, Math.round(((v - min) / range) * 100));
+          var st = getSensorStatusForValue(key, v);
+          return '<div class="sparkline-bar ' + st + '" style="height:' + h + '%"></div>';
+        }).join('');
+      }
+
+      // Trigger alerts on status change
+      var prevStatus = alertedSensors[key] || 'ok';
+      if (status !== 'ok' && status !== prevStatus) {
+        var alertType = status === 'danger' ? 'danger' : 'warning';
+        var decimals = s.decimals || 0;
+        addAlert(alertType, s.label + ' ' + (status === 'danger' ? 'CRITICAL' : 'Warning'),
+          s.label + ' is at ' + s.val.toFixed(decimals) + s.unit + '. Safe range: ' + s.min + '–' + s.max + s.unit);
+      } else if (status === 'ok' && prevStatus !== 'ok' && prevStatus !== undefined) {
+        addAlert('success', s.label + ' Recovered', s.label + ' returned to normal: ' + formatVal(key) + s.unit);
+      }
+      alertedSensors[key] = status;
+    }
+
+    function getSensorStatusForValue(key, v) {
+      var s = sensorState[key];
+      if (v < s.min || v > s.max) return 'warn';
+      return 'ok';
+    }
+
+    // Simulate sensor drift
+    function tickSensors() {
+      Object.keys(sensorState).forEach(function (key) {
+        var s = sensorState[key];
+        var drift = (Math.random() - 0.48) * (s.rangeMax - s.rangeMin) * 0.03;
+        s.val = Math.max(s.rangeMin, Math.min(s.rangeMax, s.val + drift));
+        updateSensorUI(key);
+      });
+    }
+
+    // Init sparklines immediately
+    Object.keys(sensorState).forEach(function (k) { updateSensorUI(k); });
+
+    // Update sensors every 3 seconds
+    setInterval(tickSensors, 3000);
+
+    // Occasional random spike for demo (alert trigger)
+    setInterval(function () {
+      var keys = Object.keys(sensorState);
+      var key = keys[Math.floor(Math.random() * keys.length)];
+      var s = sensorState[key];
+      var spikeLow = Math.random() > 0.5;
+      if (spikeLow) {
+        s.val = s.rangeMin + (s.min - s.rangeMin) * Math.random() * 0.8;
+      } else {
+        s.val = s.max + (s.rangeMax - s.max) * Math.random() * 0.8;
+      }
+      updateSensorUI(key);
+    }, 18000); // spike every 18s
+
+    // Startup info alert
+    setTimeout(function () {
+      addAlert('info', 'System Online', 'All 8 sensors connected. Live data streaming every 3 seconds.');
+    }, 1200);
+    setTimeout(function () {
+      addAlert('success', 'Solar Panel Active', 'Generating 2.4 kW — enough to power all farm systems.');
+    }, 2500);
+
+    // ============================================================
+    // TIMER CONTROLS
+    // ============================================================
+    var timers = {};
+
+    function setTimer(key) {
+      var mEl = document.getElementById('timer-input-' + key + '-m');
+      var sEl = document.getElementById('timer-input-' + key + '-s');
+      var mins = parseInt(mEl.value) || 0;
+      var secs = parseInt(sEl.value) || 0;
+      var totalSeconds = mins * 60 + secs;
+
+      if (totalSeconds < 1) {
+        showToast('warning', '⚠️ Invalid Timer', 'Enter at least 1 second in the minutes or seconds field.');
+        return;
+      }
+
+      var label = { pump: 'Hydroponic Pump', irrigation: 'Irrigation System', lights: 'Grow Lights', water: 'Water Pump' };
+      var icons = { pump: '💧', irrigation: '🚿', lights: '💡', water: '⛽' };
+      var deviceName = label[key] || key;
+      var ic = icons[key] || '⚙️';
+
+      // Capture current ON/OFF state at the moment Set is pressed
+      var toggle = document.getElementById('toggle-' + key);
+      var isCurrentlyOn = toggle ? toggle.checked : false;
+
+      // Determine what action to take when timer fires
+      // If OFF now  → timer will turn it ON
+      // If ON now   → timer will turn it OFF
+      var willTurnOn = !isCurrentlyOn;
+      var actionVerb = willTurnOn ? 'ON' : 'OFF';
+      var actionEmoji = willTurnOn ? '🟢' : '🔴';
+
+      // Update the timer label to reflect scheduled action
+      var timerLabelEl = document.getElementById('timer-label-' + key);
+      if (timerLabelEl) {
+        timerLabelEl.textContent = willTurnOn ? '⏱ Auto-ON Timer' : '⏱ Auto-OFF Timer';
+      }
+
+      // Clear existing timer
+      if (timers[key]) cancelTimer(key, true);
+
+      var remaining = totalSeconds;
+      var h0 = Math.floor(totalSeconds / 3600);
+      var m0 = Math.floor((totalSeconds % 3600) / 60);
+      var s0 = totalSeconds % 60;
+      var durationStr = (h0 > 0 ? h0 + 'h ' : '') + (m0 > 0 ? m0 + 'm ' : '') + s0 + 's';
+
+      var cdEl = document.getElementById('timer-cd-' + key);
+      var textEl = document.getElementById('timer-text-' + key);
+      var pfEl = document.getElementById('timer-pf-' + key);
+      var btnEl = document.getElementById('timer-btn-' + key);
+
+      cdEl.classList.add('running');
+      btnEl.textContent = '⏳ Running';
+      btnEl.disabled = true;
+
+      addAlert('info',
+        '⏱ Timer Set — ' + ic + ' ' + deviceName,
+        deviceName + ' will automatically turn ' + actionVerb + ' in ' + durationStr + '. Currently ' + (isCurrentlyOn ? 'ON' : 'OFF') + '.');
+      showToast('info',
+        '⏱ Timer Started',
+        deviceName + ' will turn ' + actionVerb + ' in ' + durationStr + '.');
+
+      function tick() {
+        remaining--;
+        var pct = (remaining / totalSeconds) * 100;
+        var h = Math.floor(remaining / 3600);
+        var m = Math.floor((remaining % 3600) / 60);
+        var s = remaining % 60;
+        textEl.textContent = h.toString().padStart(2, '0') + ':' + m.toString().padStart(2, '0') + ':' + s.toString().padStart(2, '0');
+        pfEl.style.width = Math.max(0, pct) + '%';
+
+        if (remaining <= 0) {
+          // Safely clear
+          if (timers[key]) {
+            clearInterval(timers[key].interval);
+            delete timers[key];
+          }
+          cdEl.classList.remove('running');
+          btnEl.textContent = 'Set';
+          btnEl.disabled = false;
+          mEl.value = '';
+          sEl.value = '';
+
+          // Reset label
+          if (timerLabelEl) timerLabelEl.textContent = '⏱ Auto-off Timer';
+
+          // Apply the scheduled action
+          var tog = document.getElementById('toggle-' + key);
+          var stateEl = document.getElementById('state-' + key);
+          if (willTurnOn) {
+            // Turn ON
+            if (tog) tog.checked = true;
+            if (stateEl) { stateEl.textContent = 'Status: ON'; stateEl.classList.remove('off'); }
+            addAlert('success',
+              actionEmoji + ' Timer Complete — ' + deviceName + ' ON',
+              deviceName + ' has been automatically turned ON after ' + durationStr + '.');
+            showToast('success',
+              '🟢 ' + deviceName + ' Turned ON',
+              'Auto-ON timer completed after ' + durationStr + '.');
+          } else {
+            // Turn OFF
+            if (tog) tog.checked = false;
+            if (stateEl) { stateEl.textContent = 'Status: OFF'; stateEl.classList.add('off'); }
+            addAlert('success',
+              actionEmoji + ' Timer Complete — ' + deviceName + ' OFF',
+              deviceName + ' has been automatically turned OFF after ' + durationStr + '.');
+            showToast('success',
+              '🔴 ' + deviceName + ' Turned OFF',
+              'Auto-OFF timer completed after ' + durationStr + '.');
+          }
+        }
+      }
+
+      var intervalId = setInterval(tick, 1000);
+      timers[key] = { interval: intervalId, total: totalSeconds };
+    }
+
+    function cancelTimer(key, silent) {
+      if (timers[key]) {
+        clearInterval(timers[key].interval);
+        delete timers[key];
+      }
+      var label = { pump: 'Hydroponic Pump', irrigation: 'Irrigation System', lights: 'Grow Lights', water: 'Water Pump' };
+      var deviceName = label[key] || key;
+      var cdEl = document.getElementById('timer-cd-' + key);
+      var btnEl = document.getElementById('timer-btn-' + key);
+      var mEl = document.getElementById('timer-input-' + key + '-m');
+      var sEl = document.getElementById('timer-input-' + key + '-s');
+      if (cdEl) cdEl.classList.remove('running');
+      if (btnEl) { btnEl.textContent = 'Set'; btnEl.disabled = false; }
+      if (mEl) mEl.value = '';
+      if (sEl) sEl.value = '';
+      if (!silent) {
+        addAlert('warning', '⏹ Timer Cancelled — ' + deviceName, deviceName + ' timer was manually cancelled. Device remains in its current state.');
+        showToast('warning', '⏹ Timer Cancelled', deviceName + ' auto-off timer has been stopped.');
+      }
+    }
+
+    // ============================================================
+    // SMART CONTROLS STATE
+    // ============================================================
+    function updateState(key, isOn) {
+      var el = document.getElementById('state-' + key);
+      if (el) {
+        el.textContent = 'Status: ' + (isOn ? 'ON' : 'OFF');
+        el.classList.toggle('off', !isOn);
+      }
+      if (!isOn && timers[key]) cancelTimer(key, true);
+      var label = { pump: 'Hydroponic Pump', irrigation: 'Irrigation System', lights: 'Grow Lights', water: 'Water Pump' };
+      var deviceName = label[key] || key;
+      var icons = { pump: '💧', irrigation: '🚿', lights: '💡', water: '⛽' };
+      var ic = icons[key] || '⚙️';
+      if (isOn) {
+        addAlert('success', ic + ' ' + deviceName + ' — ON', deviceName + ' is now active and running.');
+      } else {
+        addAlert('info', ic + ' ' + deviceName + ' — OFF', deviceName + ' has been switched off.');
+      }
+    }
+
+    // ============================================================
+    // FEATURE MODALS
+    // ============================================================
+    var modalData = {
+      hydro: { icon: '💧', title: 'Hydroponics System', desc: 'Plants are grown without soil using nutrient-rich water, allowing efficient food production in small spaces. Our system recirculates water to minimize waste.', facts: ['Uses up to 90% less water than traditional farming', 'Grows plants 30–50% faster than soil-based methods', 'No pesticides or herbicides needed', 'Can grow leafy greens, herbs, and vegetables year-round'] },
+      vertical: { icon: '🌿', title: 'Vertical Farming', desc: 'Crops are grown in vertical layers to maximize food production while occupying minimal floor space. Ideal for urban environments and small homes.', facts: ['Produces up to 10x more food per square meter', 'LED grow lights simulate natural sunlight', 'Controlled environment eliminates weather dependency', 'Reduces food miles and transportation emissions'] },
+      sqft: { icon: '🥕', title: 'Square Foot Gardening', desc: 'A compact gardening method that organizes crops into small square sections for efficient space utilization. Perfect for terrace gardens and rooftops.', facts: ['Uses 80% less space than traditional row gardening', 'Reduces water usage through targeted watering', 'Higher yield with less effort and maintenance', 'Companion planting improves pest resistance naturally'] },
+      rain: { icon: '🌧️', title: 'Rainwater Harvesting', desc: 'Rainwater collected from the terrace is filtered and stored in tanks, then reused for irrigation, reducing freshwater consumption significantly.', facts: ['Captures and stores up to 200 liters per rain event', 'Reduces municipal water dependency by 40–60%', 'Prevents runoff and reduces urban flooding', 'Stored water is naturally soft, ideal for plants'] },
+      compost: { icon: '♻️', title: 'Composting', desc: 'Kitchen and garden waste are converted into organic compost through natural decomposition, providing rich natural fertilizer for all plants.', facts: ['Converts 30% of household waste into useful compost', 'Rich in nitrogen, phosphorus, and potassium', 'Improves soil structure and water retention', 'Reduces landfill waste and methane emissions'] },
+      solar: { icon: '🌞', title: 'Solar Energy System', desc: 'Solar panels installed on the roof generate clean, renewable electricity to power all pumps, grow lights, sensors, and smart home systems.', facts: ['Generates up to 2.4 kW of electricity daily', 'Powers all pumps, lights, and IoT sensors', 'Excess energy can be stored in batteries', 'Zero carbon emissions during operation'] }
+    };
+
+    function openModal(key) {
+      var d = modalData[key];
+      document.getElementById('modal-icon').textContent = d.icon;
+      document.getElementById('modal-title').textContent = d.title;
+      document.getElementById('modal-desc').textContent = d.desc;
+      document.getElementById('modal-facts').innerHTML = d.facts.map(function (f) { return '<div class="modal-fact">' + f + '</div>'; }).join('');
+      document.getElementById('modalOverlay').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeModalDirect() { document.getElementById('modalOverlay').classList.remove('active'); document.body.style.overflow = ''; }
+    function closeModal(e) { if (e.target === document.getElementById('modalOverlay')) closeModalDirect(); }
+
+    // ============================================================
+    // NAV
+    // ============================================================
+    function toggleNav() { document.getElementById('navLinks').classList.toggle('open'); }
+    document.querySelectorAll('.nav-links a').forEach(function (a) { a.addEventListener('click', function () { document.getElementById('navLinks').classList.remove('open'); }); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeModalDirect(); closeDrawer(); } });
+
+    // Scroll active link
+    var sections = document.querySelectorAll('section[id]');
+    var navLinks = document.querySelectorAll('.nav-links a');
+    window.addEventListener('scroll', function () {
+      var current = '';
+      sections.forEach(function (s) { if (window.scrollY >= s.offsetTop - 100) current = s.getAttribute('id'); });
+      navLinks.forEach(function (a) { a.style.color = a.getAttribute('href') === '#' + current ? 'var(--green-600)' : ''; });
+    });
+
+    // Scroll Reveal
+    var revealObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry, i) {
+        if (entry.isIntersecting) {
+          setTimeout(function () { entry.target.classList.add('visible'); }, i * 80);
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(function (el) { revealObserver.observe(el); });
+  </script>
+</body>
+
+</html>
